@@ -18,7 +18,6 @@ build-and-push:
     BUILDAH_FORMAT: docker
     IMAGE: $[[ inputs.registry ]]/$[[ inputs.image_name ]]
   script:
-    - echo "user=${#REGISTRY_USER} chars, password=${#REGISTRY_PASSWORD} chars"
     - echo "$REGISTRY_PASSWORD" | buildah login -u "$REGISTRY_USER" --password-stdin "$[[ inputs.registry ]]"
     - buildah build -t "$IMAGE:$CI_COMMIT_REF_NAME" -t "$IMAGE:latest" .
     - buildah push "$IMAGE:$CI_COMMIT_REF_NAME"

@@ -1,0 +1,24 @@
+spec:
+  inputs:
+    image_name:
+      type: string
+    registry:
+      type: string
+      default: registry.redyd.dev
+    stage:
+      type: string
+      default: deploy
+---
+build-and-push:
+  stage: $[[ inputs.stage ]]
+  image: quay.io/buildah/stable:latest
+  variables:
+    STORAGE_DRIVER: vfs
+    BUILDAH_ISOLATION: chroot
+    BUILDAH_FORMAT: docker
+    IMAGE: $[[ inputs.registry ]]/$[[ inputs.image_name ]]
+  script:
+    - echo "$REGISTRY_PASSWORD" | buildah login -u "$REGISTRY_USER" --password-stdin "$[[ inputs.registry ]]"
+    - buildah build -t "$IMAGE:$CI_COMMIT_REF_NAME" -t "$IMAGE:latest" .
+    - buildah push "$IMAGE:$CI_COMMIT_REF_NAME"
+    - buildah push "$IMAGE:latest"

@@ -1,6 +1,6 @@
 # CICD
 
-## Exemple d'utilisation
+## Exemple d'utilisation pour github
 
 ```
 name: Deploy
@@ -14,10 +14,23 @@ jobs:
   deploy:
     uses: redyd/.github/.github/workflows/deploy.yml@main
     with:
-      image_name: <nom de l'image>
+      image_name: projet/<nom de l'image>
     secrets:
       REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
       REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+```
+
+## Exemple d'utilisation pour gitlab
+
+```
+include:
+  - remote: 'https://raw.githubusercontent.com/redyd/.github/main/gitlab/deploy.yml'
+    inputs:
+      image_name: projet/<nom de l'image>
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v/
 ```
 
 **Veuillez à bien ajouter les variables dans le repo**
